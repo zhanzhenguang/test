@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>流程节点表</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<link rel="stylesheet" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet"
+	href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="../../css/main.css">
+<script src="../../libs/jquery.min.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../libs/bootstrap.min.js"></script>
+<script src="../../libs/vue.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+<script type='text/javascript'>
+	document.write("<script src='../../js/common.js?v=" + Date.now() + "'><\/script>");
+</script>
+</head>
+<body>
+	<div id="rrapp" v-cloak>
+		<div v-show="showList">
+			<div class="grid-btn" style="width: 100%; float: left;">
+				<!-- <div class="form-group col-sm-2">
+					<input type="text" class="form-control" v-model="q.flowName" @keyup.enter="query" placeholder="节点名称">
+				</div> -->
+				<a class="btn btn-default" @click="query">查询</a>
+				<a v-if="hasPermission('flow:node:save')" class="btn btn-primary"
+					@click="add"><i class="fa fa-plus"></i>&nbsp;新增</a> <a
+					v-if="hasPermission('flow:node:update')" class="btn btn-primary"
+					@click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a> <a
+					v-if="hasPermission('flow:node:delete')" class="btn btn-primary"
+					@click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+				<a v-if="hasPermission('flow:node:info')" class="btn btn-primary" @click="check"><i class="fa fa-mail-forward "></i>&nbsp;查看</a>
+			</div>
+			<div style="width: 20%; float: left; margin-right: 10px;">
+				<table id="jqGrid1"></table>
+				<div id="jqGridPager1"></div>
+			</div>
+			<div style="width: 78%; float: left">
+				<table id="jqGrid"></table>
+				<div id="jqGridPager"></div>
+			</div>
+		</div>
+
+		<div v-show="!showList" class="panel panel-default">
+			<div class="panel-heading">{{title}}</div>
+			<form class="form-horizontal form-horizontal-left">
+				<div class="form-group">
+					<div class="col-sm-2 control-label">节点编码</div>
+					<div class="col-sm-10">
+						<input id="nodeCode" type="text" class="form-control" v-model="node.nodeCode"
+							placeholder="节点编码" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">节点名称</div>
+					<div class="col-sm-10">
+						<input id="nodeName" type="text" class="form-control" v-model="node.nodeName"
+							placeholder="节点名称" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">流程编码</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="flowCode" readonly="readonly"
+							placeholder="流程编码" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">排序</div>
+					<div class="col-sm-10">
+						<input id="rank" type="text" class="form-control" v-model="node.rank"  
+							placeholder="排序" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">流程名称</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="flowName" readonly="readonly"
+							placeholder="流程名称" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">节点类型</div>
+					<div class="col-sm-10">
+						<select id="typ" class="form-control" v-model="node.typ" name="typ">
+							<option v-for="(item,index) in nodeTyp"  :value="item.id">{{ item.name }}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">上一节点</div>
+					<div class="col-sm-10">
+						<input id="posY" type="text" class="form-control" v-model="node.posY"
+							placeholder="上一节点" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">上一节点名称</div>
+					<div class="col-sm-10">
+						<input id="posYName" type="text" class="form-control" v-model="node.posYName"
+							placeholder="上一节点" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">上一节点执行方法</div>
+					<div class="col-sm-10">
+						<input id="yBeanMethod" type="text" class="form-control" v-model="node.yBeanMethod"
+							placeholder="上一节点执行bean和方法（逗号隔开)" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">下一节点1</div>
+					<div class="col-sm-10">
+						<input id="posX" type="text" class="form-control" v-model="node.posX"
+							placeholder="下一节点1" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">下一节点1名称</div>
+					<div class="col-sm-10">
+						<input id="posXName" type="text" class="form-control" v-model="node.posXName"
+							placeholder="下一节点1" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">下一节点1方法</div>
+					<div class="col-sm-10">
+						<input id="xBeanMethod" type="text" class="form-control" v-model="node.xBeanMethod"
+							placeholder="下一节点1执行bean和方法（逗号隔开）" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">下一节点2</div>
+					<div class="col-sm-10">
+						<input id="posZ" type="text" class="form-control" v-model="node.posZ"
+							placeholder="下一节点2" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">下一节点2名称</div>
+					<div class="col-sm-10">
+						<input id="posZName" type="text" class="form-control" v-model="node.posZName"
+							placeholder="下一节点2" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">下一节点2方法</div>
+					<div class="col-sm-10">
+						<input id="zBeanMethod" type="text" class="form-control" v-model="node.zBeanMethod"
+							placeholder="下一节点2执行bean和方法（逗号隔开）" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">下一节点3</div>
+					<div class="col-sm-10">
+						<input id="posI" type="text" class="form-control" v-model="node.posI"
+							placeholder="下一节点3" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">下一节点3名称</div>
+					<div class="col-sm-10">
+						<input id="posIName" type="text" class="form-control" v-model="node.posIName"
+							placeholder="下一节点3" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">下一节点3方法</div>
+					<div class="col-sm-10">
+						<input id="iBeanMethod" type="text" class="form-control" v-model="node.iBeanMethod"
+							placeholder="下一节点3执行bean和方法（逗号隔开）" />
+					</div>
+				</div>
+				<div class="form-group" v-if="typ=='update'">
+					<div class="col-sm-2 control-label">创建者ID</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" readonly="readonly"
+							v-model="node.createUserId" placeholder="创建者ID" />
+					</div>
+				</div>
+				<div class="form-group" v-if="typ=='update'">
+					<div class="col-sm-2 control-label">创建时间</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="node.createTime" readonly="readonly"
+							placeholder="创建时间" />
+					</div>
+				</div>
+				<div class="form-group" v-if="typ=='update'">
+					<div class="col-sm-2 control-label">更新人id</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" readonly="readonly"
+							v-model="node.updateUserId" placeholder="更新人id" />
+					</div>
+				</div>
+				<div class="form-group" v-if="typ=='update'">
+					<div class="col-sm-2 control-label">更新时间</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="node.updateTime" readonly="readonly"
+							placeholder="更新时间" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label"></div>
+					<input  id="saveBtn" type="button" class="btn btn-primary" @click="saveOrUpdate"
+						value="确定" /> &nbsp;&nbsp;<input type="button"
+						class="btn btn-warning" @click="reload" value="返回" />
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="rrapp1" v-cloak  v-show="showList1" style="margin-top: 10px;float: left;width: 100%;">
+		<div v-show="showList">
+			<div class="grid-btn">
+				<a class="btn btn-default" @click="query">查询</a>
+				<a v-if="hasPermission('flow:executerole:save')"
+					class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+				<a v-if="hasPermission('flow:executerole:update')"
+					class="btn btn-primary" @click="update"><i
+					class="fa fa-pencil-square-o"></i>&nbsp;修改</a> <a
+					v-if="hasPermission('flow:executerole:delete')"
+					class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</div>
+			<table id="jqGrid2"></table>
+			<div id="jqGridPager2"></div>
+		</div>
+
+		<div v-show="!showList" class="panel panel-default">
+			<div class="panel-heading">{{title}}</div>
+			<form class="form-horizontal">
+				<div class="form-group">
+					<div class="col-sm-2 control-label">角色编码</div>
+					<div class="col-sm-10">
+						<div  v-if="typ == 'update' "> 
+							<input type="text" class="form-control" v-model="executeRole.executeRole" readonly="readonly"
+							placeholder="角色编码" />
+						</div>
+						 <div v-else>
+						 	<input type="text" class="form-control" v-model="executeRole.executeRole"
+							placeholder="角色编码" />
+   						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">角色名称</div>
+					<div class="col-sm-10">
+						 	<input type="text" class="form-control" v-model="executeRole.executeRoleName"
+							placeholder="角色名称" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">节点编码</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="executeRole.node" readonly="readonly"
+							placeholder="节点编码" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">流程编码</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="executeRole.flow" readonly="readonly"
+							placeholder="流程编码" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label"></div>
+					<input type="button" class="btn btn-primary" @click="saveOrUpdate"
+						value="确定" /> &nbsp;&nbsp;<input type="button"
+						class="btn btn-warning" @click="reload" value="返回" />
+				</div>
+			</form>
+		</div>
+	</div>
+	<script src="../../js/modules/flow/node.js"></script>
+</body>
+</html>

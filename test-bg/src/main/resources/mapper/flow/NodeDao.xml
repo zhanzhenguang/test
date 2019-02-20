@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.zzg.modules.flow.dao.NodeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.sc.zzg.modules.flow.entity.NodeEntity" id="nodeMap">
+        <result property="nodeCode" column="node_code"/>
+        <result property="nodeName" column="node_name"/>
+        <result property="flowCode" column="flow_code"/>
+        <result property="rank" column="rank"/>
+        <result property="posX" column="pos_x"/>
+        <result property="posY" column="pos_y"/>
+        <result property="posZ" column="pos_z"/>
+        <result property="posI" column="pos_i"/>
+        <result property="posXName" column="pos_x_name"/>
+        <result property="posYName" column="pos_y_name"/>
+        <result property="posZName" column="pos_z_name"/>
+        <result property="posIName" column="pos_i_name"/>
+        <result property="xBeanMethod" column="x_bean_method"/>
+		<result property="yBeanMethod" column="y_bean_method"/>
+		<result property="zBeanMethod" column="z_bean_method"/>
+		<result property="iBeanMethod" column="i_bean_method"/>
+        <result property="typ" column="typ"/>
+        <result property="executeRole" column="execute_role"/>
+        <result property="executeRoleName" column="execute_role_name"/>
+        <result property="status" column="status"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.sc.zzg.modules.flow.entity.NodeEntity">
+		select * from flow_node where node_code = #{value}
+	</select>
+	<select id="queryObjectByOne"  resultType="com.sc.zzg.modules.flow.entity.NodeEntity">
+		select * from flow_node where node_code = #{nodeCode} and flow_code=#{flowCode}
+	</select>
+	<sql id="dyWhere"> 
+			where 1=1
+			<if test=" flowCode != null and flowCode != '' ">and  s.flow_code = #{flowCode}</if>
+			<if test=" nodeCode != null and nodeCode != '' ">and  s.node_code = #{nodeCode}</if>
+	</sql>
+	<select id="queryList" resultType="com.sc.zzg.modules.flow.entity.NodeEntity">
+		select 
+			s.*
+		from flow_node s
+		<include refid="dyWhere"></include>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by node_code desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from flow_node s   <include refid="dyWhere"></include>
+	</select>
+	 
+	<insert id="save" parameterType="com.sc.zzg.modules.flow.entity.NodeEntity">
+		insert into flow_node
+		(
+			`node_code`, 
+			`node_name`, 
+			`flow_code`, 
+			`rank`, 
+			`pos_x`, 
+			`pos_y`, 
+			`pos_z`,
+			`pos_i`,
+			`pos_x_name`, 
+			`pos_y_name`, 
+			`pos_z_name`, 
+			`pos_i_name`,
+			`x_bean_method`,	
+			`y_bean_method`,	
+			`z_bean_method`,	
+			`i_bean_method`,
+			`typ`, 
+			`status`, 
+			`create_user_id`, 
+			`create_time`, 
+			`update_user_id`, 
+			`update_time`
+		)
+		values
+		(
+			#{nodeCode}, 
+			#{nodeName}, 
+			#{flowCode},
+			#{rank},
+			#{posX}, 
+			#{posY}, 
+			#{posZ},
+			#{posI},
+			#{posXName}, 
+			#{posYName}, 
+			#{posZName}, 
+			#{posIName},
+			#{xBeanMethod}, 
+			#{yBeanMethod}, 
+			#{zBeanMethod}, 
+			#{iBeanMethod},
+			#{typ},
+			#{status}, 
+			#{createUserId}, 
+			#{createTime}, 
+			#{updateUserId}, 
+			#{updateTime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.sc.zzg.modules.flow.entity.NodeEntity">
+		update flow_node 
+		<set>
+			<if test="nodeName != null">`node_name` = #{nodeName}, </if>
+			<if test="nodeCode != null">`node_code` = #{nodeCode}, </if>
+			<if test="rank != null">`rank` = #{rank}, </if>
+			<if test="posX != null">`pos_x` = #{posX}, </if>
+			<if test="posY != null">`pos_y` = #{posY}, </if>
+			<if test="posZ != null">`pos_z` = #{posZ}, </if>
+			<if test="posI != null">`pos_i` = #{posI}, </if>
+			<if test="posXName != null">`pos_x_name` = #{posXName}, </if>
+			<if test="posYName != null">`pos_y_name` = #{posYName}, </if>
+			<if test="posZName != null">`pos_z_name` = #{posZName}, </if>
+			<if test="posIName != null">`pos_i_name` = #{posIName}, </if>
+			<if test="xBeanMethod != null">`x_bean_method` = #{xBeanMethod}, </if>
+			<if test="yBeanMethod != null">`y_bean_method` = #{yBeanMethod}, </if>
+			<if test="zBeanMethod != null">`z_bean_method` = #{zBeanMethod}, </if>
+			<if test="iBeanMethod != null">`i_bean_method` = #{iBeanMethod}, </if>
+			<if test="typ != null">`typ` = #{typ}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="createUserId != null">`create_user_id` = #{createUserId}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="updateUserId != null">`update_user_id` = #{updateUserId}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}</if>
+		</set>
+		where node_code = #{nodeCode} and `flow_code` = #{flowCode}
+	</update>
+	
+	<delete id="delete">
+		delete from flow_node where node_code = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from flow_node where node_code in 
+		<foreach item="nodeCode" collection="array" open="(" separator="," close=")">
+			#{nodeCode}
+		</foreach>
+	</delete>
+
+</mapper>

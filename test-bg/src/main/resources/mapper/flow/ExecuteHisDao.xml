@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.zzg.modules.flow.dao.ExecuteHisDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.sc.zzg.modules.flow.entity.ExecuteHisEntity" id="executeHisMap">
+        <result property="id" column="id"/>
+        <result property="node" column="node"/>
+        <result property="nodeName" column="node_name"/>
+        <result property="flowCode" column="flow_code"/>
+        <result property="formId" column="form_id"/>
+        <result property="comment" column="comment"/>
+        <result property="status" column="status"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.sc.zzg.modules.flow.entity.ExecuteHisEntity">
+		select * from flow_execute_his  where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.sc.zzg.modules.flow.entity.ExecuteHisEntity">
+		select s.*,n.node_name,u.username from flow_execute_his s
+		<include refid="dyWhere"></include>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} s.${order}
+            </when>
+			<otherwise>
+                order by s.id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from flow_execute_his s <include refid="dyWhere"></include>
+	</select>
+	 
+	<sql id="dyWhere">
+		LEFT JOIN flow_node_instance ni ON ni.form_id=s.form_id  and s.node=ni.node_code and ni.flow_code=s.flow_code
+		LEFT JOIN flow_node n ON n.node_code=ni.node_code and ni.flow_code=n.flow_code
+		LEFT JOIN sys_user u ON s.create_user_id = u.user_id
+		<where>
+<!-- 			and ni.id = #{nodeInstanceId} -->
+			and s.form_id like CONCAT('%',#{formId},'%') 
+			<if test="node != null"> and s.node = #{node} </if>
+			<if test="flowCode != null"> and s.flow_code = #{flowCode} </if>
+			<if test="comment != null"> and s.comment = #{comment} </if>
+		</where>
+	</sql>
+	
+	<insert id="save" parameterType="com.sc.zzg.modules.flow.entity.ExecuteHisEntity">
+		insert into flow_execute_his
+		(
+			`id`, 
+			`node`, 
+			`flow_code`, 
+			`form_id`, 
+			`comment`, 
+			`status`, 
+			`create_user_id`, 
+			`create_time`
+		)
+		values
+		(
+			#{id}, 
+			#{node}, 
+			#{flowCode}, 
+			#{formId}, 
+			#{comment}, 
+			#{status}, 
+			#{createUserId}, 
+			#{createTime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.sc.zzg.modules.flow.entity.ExecuteHisEntity">
+		update flow_execute_his 
+		<set>
+			<if test="node != null">`node` = #{node}, </if>
+			<if test="flowCode != null">`flow_code` = #{flowCode}, </if>
+			<if test="formId != null">`form_id` = #{formId}, </if>
+			<if test="comment != null">`comment` = #{comment}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="createUserId != null">`create_user_id` = #{createUserId}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="updateByFormId">
+		update flow_execute_his set status='2' where form_id=#{formId}
+	</update>
+	
+	<delete id="delete">
+		delete from flow_execute_his where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from flow_execute_his where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

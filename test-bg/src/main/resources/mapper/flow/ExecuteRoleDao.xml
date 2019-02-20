@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.zzg.modules.flow.dao.ExecuteRoleDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity" id="executeRoleMap">
+        <result property="executeRole" column="execute_role"/>
+        <result property="executeRoleName" column="execute_role_name"/>
+        <result property="node" column="node"/>
+        <result property="flow" column="flow"/>
+        <result property="status" column="status"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity">
+		select * from flow_execute_role where execute_role = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity">
+		select * from flow_execute_role t
+		 <include refid="dyWhere"></include>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} t.${order}
+            </when>
+			<otherwise>
+                order by t.execute_role desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from flow_execute_role t <include refid="dyWhere"></include>
+	</select>
+	<sql id="dyWhere">
+		<where>
+			<if test="nodeCode != null">and t.node = #{nodeCode} </if>
+			<if test="flowCode != null">and t.flow = #{flowCode} </if>
+			<if test="executeRoleCode != null">and t.execute_role = #{executeRoleCode} </if>
+		</where>
+	</sql>
+	
+	<select id="select" resultType="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity">
+		select 
+			t.execute_role,
+			t.execute_role_name,
+		  	t1.user_id,
+			u.username
+		from flow_execute_role t 
+		left join flow_execute_role_user t1 on t1.execute_role=t.execute_role
+		left join sys_user u on t1.user_id=u.user_id
+		where t.node = (select n.node_code from flow_node_instance n where n.form_id=#{formId} 
+		<choose>
+			<when test="nodeCode != null">and n.node_code = #{nodeCode}</when>
+			<otherwise>
+				and n.node_status=3
+			</otherwise>
+		</choose>
+		) 
+		order by t.execute_role desc 
+	</select>
+	<insert id="save" parameterType="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity">
+		insert into flow_execute_role
+		(
+			`execute_role`,
+			`execute_role_name`,  
+			`node`, 
+			`flow`, 
+			`status`, 
+			`create_user_id`, 
+			`create_time`, 
+			`update_user_id`, 
+			`update_time`
+		)
+		values
+		(
+			#{executeRole},
+			#{executeRoleName},  
+			#{node}, 
+			#{flow}, 
+			#{status}, 
+			#{createUserId}, 
+			#{createTime}, 
+			#{updateUserId}, 
+			#{updateTime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity">
+		update flow_execute_role 
+		<set>
+			<if test="node != null">`node` = #{node}, </if>
+			<if test="executeRoleName != null">`execute_role_name` = #{executeRoleName}, </if>
+			<if test="flow != null">`flow` = #{flow}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="createUserId != null">`create_user_id` = #{createUserId}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="updateUserId != null">`update_user_id` = #{updateUserId}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}</if>
+		</set>
+		where execute_role = #{executeRole}
+	</update>
+	
+	<delete id="delete">
+		delete from flow_execute_role where execute_role = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from flow_execute_role where execute_role in 
+		<foreach item="executeRole" collection="array" open="(" separator="," close=")">
+			#{executeRole}
+		</foreach>
+	</delete>
+
+	<select id="selectForUser" resultMap="executeRoleMap">
+		select a.* from flow_execute_role a 
+			left join flow_node b on a.flow = b.flow_code and a.node = b.node_code
+			where a.flow = #{flowCode}
+			ORDER BY b.rank asc 
+	</select>
+</mapper>

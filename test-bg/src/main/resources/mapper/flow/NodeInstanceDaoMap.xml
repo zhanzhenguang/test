@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.zzg.modules.flow.dao.NodeInstanceDao">
+ 
+	
+ 
+	<select id="queryObjectByMap" resultType="com.sc.zzg.modules.flow.entity.NodeInstanceEntity">
+		select * from 
+		<include refid="queryByUserIdSql"></include>
+		<include refid="dyWhereByUserId"></include>
+	</select>
+	
+	<sql id="queryByUserIdSql">
+		(SELECT
+				fni.id,
+				fni.form_id,
+				fni.org_id,
+				fni.node_code,
+				fni.flow_code,
+				fni.pos_x,
+				fni.pos_i,
+				fni.pos_y,
+				fni.pos_z,
+				fni.typ,
+				fni.node_status,
+				fni.status,
+				fni.create_time,
+				fni.create_user_id, 
+				fn.x_bean_method,
+				fn.y_bean_method,
+				fn.z_bean_method,
+				fn.i_bean_method,
+				fl.flow_name,
+				fn.node_name,
+				fl.detail_url,
+				feh.create_time update_time,
+				feh.create_user_id update_user_id
+			FROM
+				(select * from flow_node_instance tb <if test=" qryNodeStatus != 'all' "> where tb.node_status = 3 </if> ) fni
+			  LEFT JOIN flow_list fl ON fni.flow_code = fl.flow_code
+			  LEFT JOIN flow_node fn ON fni.flow_code = fn.flow_code AND fn.node_code = fni.node_code AND fn.node_code = fni.node_code
+			  LEFT JOIN flow_execute_his feh ON feh.form_id = fni.form_id AND feh. STATUS = '1' and fni.node_code = feh.node
+	 		where fni.id = #{id}
+	 		<if test=" formId != null and formId != '' "> and fni.form_id = #{formId}</if>
+		) t
+		LEFT JOIN flow_execute_role fer ON t.node_code = fer.node and fer.flow = t.flow_code 
+		where 1=1  
+	</sql>
+	<sql id="dyWhereByUserId">
+	</sql>
+	 
+</mapper>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.zzg.modules.sys.dao.AppDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.sc.zzg.modules.sys.entity.AppEntity" id="appMap">
+        <result property="id" column="id"/>
+        <result property="password" column="password"/>
+        <result property="appName" column="app_name"/>
+        <result property="appV" column="app_v"/>
+        <result property="signature" column="signature"/>
+        <result property="appid" column="appid"/>
+        <result property="secret" column="secret"/>
+        <result property="payAcount" column="pay_acount"/>
+        <result property="paySecret" column="pay_secret"/>
+        <result property="paySign" column="pay_sign"/>
+        <result property="payPwd" column="pay_pwd"/>
+        <result property="notifyUrl" column="notify_url"/>
+        <result property="rank" column="rank"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.sc.zzg.modules.sys.entity.AppEntity">
+		select * from app where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.sc.zzg.modules.sys.entity.AppEntity">
+		select * from app
+		<where>
+			<if test=" appName != null and appName.trim() != '' ">
+				app_name = #{appName}
+			</if>
+			<if test=" id != null and id.trim() != '' ">
+				id = #{id}
+			</if>
+		</where>
+		
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from app 
+	</select>
+	 
+	<insert id="save" parameterType="com.sc.zzg.modules.sys.entity.AppEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into app
+		(
+			`password`,
+			`app_name`, 
+			`app_v`, 
+			`signature`, 
+			`appid`, 
+			`secret`, 
+			`pay_acount`, 
+			`pay_secret`, 
+			`pay_sign`, 
+			`pay_pwd`, 
+			`notify_url`, 
+			`rank`, 
+			`create_time`, 
+			`update_time`, 
+			`create_by`, 
+			`update_by`, 
+			`status`
+		)
+		values
+		(
+			#{password},
+			#{appName},  
+			#{appV}, 
+			#{signature}, 
+			#{appid}, 
+			#{secret}, 
+			#{payAcount}, 
+			#{paySecret}, 
+			#{paySign}, 
+			#{payPwd}, 
+			#{notifyUrl}, 
+			#{rank}, 
+			#{createTime}, 
+			#{updateTime}, 
+			#{createBy}, 
+			#{updateBy}, 
+			#{status}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.sc.zzg.modules.sys.entity.AppEntity">
+		update app 
+		<set>
+			<if test="appName != null">`app_name` = #{appName}, </if>
+			<if test="appName != null">`password` = #{password}, </if>
+			<if test="appV != null">`app_v` = #{appV}, </if>
+			<if test="signature != null">`signature` = #{signature}, </if>
+			<if test="appid != null">`appid` = #{appid}, </if>
+			<if test="secret != null">`secret` = #{secret}, </if>
+			<if test="payAcount != null">`pay_acount` = #{payAcount}, </if>
+			<if test="paySecret != null">`pay_secret` = #{paySecret}, </if>
+			<if test="paySign != null">`pay_sign` = #{paySign}, </if>
+			<if test="payPwd != null">`pay_pwd` = #{payPwd}, </if>
+			<if test="notifyUrl != null">`notify_url` = #{notifyUrl}, </if>
+			<if test="rank != null">`rank` = #{rank}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}, </if>
+			<if test="status != null">`status` = #{status}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from app where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from app where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="queryAppIdList" resultType="long">
+		select app_id from sys_user_app where user_id = #{value}
+	</select>
+</mapper>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>流程执行角色表</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<link rel="stylesheet" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet"
+	href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="../../css/main.css">
+<script src="../../libs/jquery.min.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../libs/bootstrap.min.js"></script>
+<script src="../../libs/vue.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+<script type='text/javascript'>
+	document.write("<script src='../../js/common.js?v=" + Date.now() + "'><\/script>");
+</script>
+</head>
+<body>
+	<div id="rrapp" v-cloak>
+		<div v-show="showList">
+			<div class="grid-btn">
+				<a v-if="hasPermission('flow:executerole:save')"
+					class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+				<a v-if="hasPermission('flow:executerole:update')"
+					class="btn btn-primary" @click="update"><i
+					class="fa fa-pencil-square-o"></i>&nbsp;修改</a> <a
+					v-if="hasPermission('flow:executerole:delete')"
+					class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+					<a v-if="hasPermission('flow:executerole:info')" class="btn btn-primary" @click="check"><i class="fa fa-mail-forward "></i>&nbsp;查看</a>
+			</div>
+			<table id="jqGrid"></table>
+			<div id="jqGridPager"></div>
+		</div>
+
+		<div v-show="!showList" class="panel panel-default">
+			<div class="panel-heading">{{title}}</div>
+			<form class="form-horizontal">
+				<div class="form-group">
+					<div class="col-sm-2 control-label">角色编码</div>
+					<div class="col-sm-10">
+						<div  v-if="typ == 'update' "> 
+							<input type="text" class="form-control" v-model="executeRole.executeRole" readonly="readonly"
+							placeholder="角色编码" />
+						</div>
+						 <div v-else>
+						 	<input type="text" class="form-control" v-model="executeRole.executeRole"
+							placeholder="角色编码" />
+   						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">角色名称</div>
+					<div class="col-sm-10">
+						 	<input id="executeRoleName" type="text" class="form-control" v-model="executeRole.executeRoleName"
+							placeholder="角色名称" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">节点编码</div>
+					<div class="col-sm-10">
+						<input id="node" type="text" class="form-control" v-model="executeRole.node"
+							placeholder="节点编码" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">流程编码</div>
+					<div class="col-sm-10">
+						<input id="flow" type="text" class="form-control" v-model="executeRole.flow"
+							placeholder="流程编码" />
+					</div>
+				</div>
+				<!-- <div class="form-group">
+					<div class="col-sm-2 control-label">状态</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="executeRole.status" placeholder="状态  0：禁用   1：正常"/>
+					</div>
+				</div> -->
+				<div  v-if="typ == 'update' ">
+				<div class="form-group">
+					<div class="col-sm-2 control-label">创建者ID</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="executeRole.createUserId" placeholder="创建者ID" readonly="readonly" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">创建时间</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="executeRole.createTime" placeholder="创建时间"  readonly="readonly"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">更新人id</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="executeRole.updateUserId" placeholder="更新人id" readonly="readonly" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">更新时间</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="executeRole.updateTime" placeholder="更新时间"  readonly="readonly"/>
+					</div>
+				</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label"></div>
+					<input id="saveBtn" type="button" class="btn btn-primary" @click="saveOrUpdate"
+						value="确定" /> &nbsp;&nbsp;<input type="button"
+						class="btn btn-warning" @click="reload" value="返回" />
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script src="../../js/modules/flow/executerole.js"></script>
+</body>
+</html>

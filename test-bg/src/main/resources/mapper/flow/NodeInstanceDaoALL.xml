@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.zzg.modules.flow.dao.NodeInstanceDao">
+   
+	<sql id="queryForAll">
+		(SELECT
+				fni.id,
+				fni.form_id,
+				fni.org_id,
+				fni.node_code,
+				fni.flow_code,
+				fni.pos_x,
+				fni.pos_i,
+				fni.pos_y,
+				fni.pos_z,
+				fni.typ,
+				fni.node_status,
+				fni.status,
+				fni.create_time,
+				fni.create_user_id,
+				cont.cont_code,
+				tet.`name` as tenant_name
+			FROM
+				flow_execute_his feh
+			LEFT JOIN flow_node_instance fni ON feh.form_id = fni.form_id and feh.node=fni.node_code and fni.flow_code=feh.flow_code
+			left join zs_cont_info cont on fni.form_id like CONCAT('%',cont.ID,'%')
+			left join zs_tenant tet on cont.renter_code = tet.`code`
+		) t
+		left join flow_list fl ON t.flow_code = fl.flow_code
+		left join flow_node fn ON t.flow_code = fn.flow_code and fn.node_code=t.node_code
+		LEFT JOIN flow_execute_role fer ON t.node_code = fer.node and fer.flow = t.flow_code   
+		where 1=1 
+			AND t.node_status = 1  
+			and fer.execute_role in  <foreach item="item" index="index" collection="executeRoleList"   open="(" separator="," close=")">  #{item} </foreach>
+			and t.org_id in  <foreach item="item" index="index" collection="orgIdList"   open="(" separator="," close=")">  #{item} </foreach>
+	</sql>
+	<sql id="dyWhereForAll">
+			<if test=" contCode != null and contCode != '' "> and t.cont_code like  CONCAT('%',#{contCode},'%')</if>
+			<if test=" tenantName != null and tenantName != '' "> and t.tenant_name like  CONCAT('%',#{tenantName},'%')</if>
+			<if test=" formId != null and formId != '' "> and t.form_id like  CONCAT('%',#{formId},'%')</if>
+			<if test=" id != null and id != '' "> and t.id = #{id}</if>
+			<if test=" flowCode != null and flowCode != '' ">and  t.flow_code = #{flowCode}</if>
+			<if test=" nodeCode != null and nodeCode != '' ">and  t.node_code = #{nodeCode}</if>
+			<if test=" executeRoleName != null and executeRoleName != '' "> and t.execute_role_name like '%${executeRoleName}%'</if>
+			<if test=" flowName != null and flowName != '' "> and t.flow_name like '%${flowName}%'</if>
+			<if test=" nodeName != null and nodeName != '' "> and t.node_name like '%${nodeName}%'</if>
+	</sql> 
+</mapper>

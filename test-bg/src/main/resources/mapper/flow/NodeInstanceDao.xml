@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.zzg.modules.flow.dao.NodeInstanceDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.sc.zzg.modules.flow.entity.NodeInstanceEntity" id="nodeInstanceMap">
+        <result property="Id" column="id"/>
+        <result property="formId" column="form_id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="rank" column="rank"/>
+        <result property="detailUrl" column="detail_url"/>
+        <result property="nodeCode" column="node_code"/>
+        <result property="nodeName" column="node_name"/>
+        <result property="flowCode" column="flow_code"/>
+        <result property="flowName" column="flow_name"/>
+        <result property="userName" column="username"/>
+        <result property="posX" column="pos_x"/>
+        <result property="posY" column="pos_y"/>
+        <result property="posZ" column="pos_z"/>
+        <result property="posI" column="pos_i"/>
+        <result property="xBeanMethod" column="x_bean_method"/>
+		<result property="yBeanMethod" column="y_bean_method"/>
+		<result property="zBeanMethod" column="z_bean_method"/>
+		<result property="iBeanMethod" column="i_bean_method"/>
+        <result property="posXName" column="pos_x_name"/>
+        <result property="posYName" column="pos_y_name"/>
+        <result property="posZName" column="pos_z_name"/>
+        <result property="posIName" column="pos_i_name"/>
+        <result property="typ" column="typ"/>
+        <result property="executeRole" column="execute_role"/>
+        <result property="executeRoleName" column="execute_role_name"/>
+        <result property="nodeStatus" column="node_status"/>
+        <result property="status" column="status"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap> 
+	  <select id="queryObjectbyCondition" resultType="com.sc.zzg.modules.flow.entity.NodeInstanceEntity">
+		select * from flow_node_instance t
+		where 1=1 
+		<if test=" formId != null and formId != '' "> and t.form_id = #{formId}</if>
+		<if test=" typ != null and typ != '' "> and t.typ = #{typ}</if>
+		<if test=" flowCode != null and flowCode != '' ">and  t.flow_code = #{flowCode}</if>
+		<if test=" nodeCode != null and nodeCode != '' ">and  t.node_code = #{nodeCode}</if>
+	</select>
+	 <select id="queryObjectbyFormId" resultType="java.lang.Integer">
+		select count(*) from flow_node_instance where form_id = #{value}
+	</select> 
+	<select id="queryListByFormId" resultType="com.sc.zzg.modules.flow.entity.NodeInstanceEntity">
+		select 
+			s.*, n.x_bean_method, n.y_bean_method, n.z_bean_method, n.i_bean_method
+		from flow_node_instance s,flow_node n
+		where s.flow_code=n.flow_code 
+			and s.node_code=n.node_code
+			and s.form_id=#{formId}   
+		ORDER BY rank asc
+	</select>
+	<select id="queryList" resultType="com.sc.zzg.modules.flow.entity.NodeInstanceEntity">
+		select 
+			t.* 
+			,fl.flow_name
+			,fn.node_name
+			,fer.execute_role_name,
+			fn.x_bean_method,
+			fn.y_bean_method,
+			fn.z_bean_method,
+			fn.i_bean_method,
+			fl.detail_url	
+		<choose>
+			<when test=" pageType == 'todo' ">
+					from 
+					<include refid="queryForToDo"></include>
+					<include refid="dyWhereForToDo"></include>
+			</when>
+			<when test=" pageType == 'done' ">
+				from 
+					<include refid="queryForDone"></include>
+					<include refid="dyWhereForDone"></include>
+			</when>
+			<when test=" pageType == 'all' ">
+				from 
+					<include refid="queryForAll"></include>
+					<include refid="dyWhereForAll"></include>
+			</when>
+		</choose>
+		 order by t.create_time desc
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*)    
+		<choose>
+			<when test=" pageType == 'todo'">
+					from 
+					<include refid="queryForToDo"></include> 
+					<include refid="dyWhereForToDo"></include>
+			</when>
+			<when test=" pageType == 'done' ">
+				from 
+					<include refid="queryForDone"></include>
+					<include refid="dyWhereForDone"></include>
+			</when>
+			<when test=" pageType == 'all' ">
+				from 
+					<include refid="queryForAll"></include>
+					<include refid="dyWhereForAll"></include>
+			</when>
+		</choose>
+	</select> 
+	
+	<insert id="save" parameterType="com.sc.zzg.modules.flow.entity.NodeInstanceEntity">
+		insert into flow_node_instance
+		(
+			`id`,
+			`form_id`,
+			`org_id`, 
+			`node_code`,
+			`node_name`, 
+			`flow_code`, 
+			`pos_x`, 
+			`pos_y`, 
+			`pos_z`, 
+			`pos_i`,
+			`pos_x_name`, 
+			`pos_y_name`, 
+			`pos_z_name`, 
+			`pos_i_name`,
+			`typ`,
+			`node_status`, 
+			`status`, 
+			`create_user_id`, 
+			`create_time`
+		)
+		values
+		(
+			#{id},
+			#{formId},
+			#{orgId},
+			#{nodeCode},  
+			#{nodeName}, 
+			#{flowCode}, 
+			#{posX}, 
+			#{posY}, 
+			#{posZ}, 
+			#{posI},
+			#{posXName}, 
+			#{posYName}, 
+			#{posZName}, 
+			#{posIName},
+			#{typ},
+			#{nodeStatus}, 
+			#{status}, 
+			#{createUserId}, 
+			#{createTime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.sc.zzg.modules.flow.entity.NodeInstanceEntity">
+		update flow_node_instance 
+		<set>
+			<if test="orgId != null">`org_id` = #{orgId}, </if>
+			<if test="formId != null">`form_id` = #{formId}, </if>
+			<if test="nodeName != null">`node_name` = #{nodeName}, </if>
+			<if test="nodeCode != null">`node_code` = #{nodeCode}, </if>
+			<if test="flowCode != null">`flow_code` = #{flowCode}, </if>
+			<if test="posX != null">`pos_x` = #{posX}, </if>
+			<if test="posY != null">`pos_y` = #{posY}, </if>
+			<if test="posZ != null">`pos_z` = #{posZ}, </if>
+			<if test="posI != null">`pos_i` = #{posI}, </if>
+			<if test="posXName != null">`pos_x_name` = #{posXName}, </if>
+			<if test="posYName != null">`pos_y_name` = #{posYName}, </if>
+			<if test="posZName != null">`pos_z_name` = #{posZName}, </if>
+			<if test="posIName != null">`pos_i_name` = #{posIName}, </if>
+			<if test="typ != null">`typ` = #{typ}, </if>
+			<if test="nodeStatus != null">`node_status` = #{nodeStatus}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="createUserId != null">`create_user_id` = #{createUserId}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from flow_node_instance where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from flow_node_instance where node_code in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<update id="updateInstanceToFinish">
+		update flow_node_instance 
+		<set>
+			 `status` = #{status} 
+		</set>
+		where id = #{id}
+	</update>
+	
+	<select id="select" resultType="com.sc.zzg.modules.flow.entity.NodeInstanceEntity">
+		SELECT
+			fni.node_code,
+			fn.node_name,
+			fni.form_id
+		FROM
+			flow_node_instance fni  
+		LEFT JOIN flow_node fn ON fni.flow_code = fn.flow_code AND fn.node_code = fni.node_code
+		where fni.form_id=#{formId} order by  fn.rank asc
+	</select>
+
+	<update id="updateContStatus">
+		update zs_cont_info set cont_status = 0 where ID = #{contId}
+	</update>
+
+	<update id="delNodeIns">
+		update flow_node_instance set `status` = 0 where form_id = #{formId}
+	</update>
+
+	<delete id="delNodeInstance">
+		delete a,b from flow_node_instance a left join flow_execute_his b on a.form_id = b.form_id
+		where a.form_id = #{formId}
+	</delete>
+
+
+</mapper>

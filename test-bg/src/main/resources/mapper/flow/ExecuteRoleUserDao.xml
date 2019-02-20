@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sc.zzg.modules.flow.dao.ExecuteRoleUserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.sc.zzg.modules.flow.entity.ExecuteRoleUserEntity" id="executeRoleUserMap">
+        <result property="userId" column="user_id"/>
+        <result property="flowCode" column="flow_code"/>
+        <result property="executeRole" column="execute_role"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.sc.zzg.modules.flow.entity.ExecuteRoleUserEntity">
+		select * from flow_execute_role_user where userId = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.sc.zzg.modules.flow.entity.ExecuteRoleUserEntity">
+		select * from flow_execute_role_user
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by execute_role desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from flow_execute_role_user 
+	</select>
+	 
+	<insert id="save" parameterType="com.sc.zzg.modules.flow.entity.ExecuteRoleUserEntity">
+		insert into flow_execute_role_user
+		(
+			`user_id`, 
+			`execute_role`
+		)
+		values
+		<foreach collection="flowRoleIdList" item="item" index="index" separator="," >
+		(
+			#{userId},
+			#{item}
+		)
+		</foreach>
+	</insert>
+	 
+	<update id="update" parameterType="com.sc.zzg.modules.flow.entity.ExecuteRoleUserEntity">
+		update flow_execute_role_user 
+		<set>
+			<if test="executeRole != null">`execute_role` = #{executeRole},</if>
+			<if test="flowCode != null">`flow_codee` = #{flowCode}</if>
+		</set>
+		where user_id = #{userId}
+		
+	</update>
+	
+	<delete id="delete">
+		delete from flow_execute_role_user where user_id = #{value}
+	</delete>
+	<delete id="deleteByUserId">
+		delete from flow_execute_role_user where user_id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from flow_execute_role_user where user_id in 
+		<foreach item="executeRole" collection="array" open="(" separator="," close=")">
+			#{userId}
+		</foreach>
+	</delete>
+
+	<select id="queryRoleIdList" resultType="String">
+		select execute_role from flow_execute_role_user where user_id = #{value}
+	</select>
+	<select id="queryRoleNameList" resultType="String">
+		select b.execute_role_name from flow_execute_role_user a,flow_execute_role b where a.execute_role = b.execute_role and a.user_id = #{value}
+	</select>
+	
+	<update id="updateFlow">
+		update flow_execute_role_user w set w.flow_code = (select s.flow from flow_execute_role s where s.execute_role=w.execute_role)
+	</update>
+</mapper>
