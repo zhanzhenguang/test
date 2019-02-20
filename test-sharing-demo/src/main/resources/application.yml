@@ -1,0 +1,81 @@
+spring:
+  application:
+    name: comment-service
+
+server:
+  port: 8080
+
+swagger:
+  title: Spring Boot + MyBatis + Sharding 分表模块
+  version: 1.0
+  base-package: com.it.zzg.controller
+  base-path: /**
+  contact:
+    name: admin
+
+debug: true
+
+sharding:
+  jdbc:
+    datasource:
+        names: ds_0,ds_1
+        ds_0:
+          type: com.alibaba.druid.pool.DruidDataSource
+          driverClassName: com.mysql.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/ds_0?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=round&allowMultiQueries=true&autoReconnect=true
+          username: root
+          password: 
+        ds_1:
+          type: com.alibaba.druid.pool.DruidDataSource
+          driverClassName: com.mysql.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/ds_1?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=round&allowMultiQueries=true&autoReconnect=true
+          username: root
+          password:
+    config:
+      sharding:
+        defaultDataSourceName: ds_1
+        default-database-strategy: 
+          inline:
+            sharding-column: id
+            algorithm-expression: ds_${(id % 2)+0}
+        tables:
+          sc_user:
+            actualDataNodes: ds_${0..1}.sc_user_${0..5}
+            tableStrategy:
+              inline:
+                shardingColumn: id
+                algorithmExpression: sc_user_${id.longValue() % 6}
+          t_user:
+            actualDataNodes: ds_${0..1}.t_user_0${0..2}
+            tableStrategy:
+              inline:
+                shardingColumn: id
+                algorithmExpression: t_user_0${id.longValue() % 3}
+          t_student:
+            actualDataNodes: ds_${0..1}.t_student_0${0..1}
+            tableStrategy:
+              inline:
+                shardingColumn: id
+                algorithmExpression: t_student_0${id.longValue() % 2}
+                    
+logging:
+  level:
+    tk:
+      mybatis: trace
+    org:
+      springframework:
+        web: error
+  file: logs/%d{yyyy-MM-dd}.log
+
+#endpoints.health.sensitive: false
+#management.security.enabled: false
+endpoints:
+  health:
+    enabled: true
+    sensitive: false
+management:
+  security:
+    enabled: false
+  health:
+    db:
+      enabled: false
