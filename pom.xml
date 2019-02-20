@@ -7,6 +7,7 @@
   <modules>
   	<module>test-com</module>
   	<module>test-sharing-demo</module>
+  	<module>test-bg</module>
   </modules>
   <parent>
 		<groupId>org.springframework.boot</groupId>
