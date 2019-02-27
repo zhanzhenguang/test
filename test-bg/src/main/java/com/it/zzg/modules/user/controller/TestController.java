@@ -1,6 +1,7 @@
 package com.it.zzg.modules.user.controller;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.redisson.api.RLock;
 import org.slf4j.Logger;
@@ -30,10 +31,10 @@ public class TestController {
     @Autowired
     private RedissonService redissonService;
 
-    @RequestMapping(value = "/test")
+    @RequestMapping(value = "/getRLock")
     @ResponseBody
-    public void test(String recordId) {
-
+    public Boolean getRLock() {	
+    	String  recordId = "recordId_111";
         RLock lock = redissonService.getRLock(recordId);
         try {
             boolean bs = lock.tryLock(5, 6, TimeUnit.SECONDS);
@@ -42,6 +43,8 @@ public class TestController {
                 log.info("进入业务代码: " + recordId);
 
                 lock.unlock();
+                
+                
             } else {
                 Thread.sleep(300);
             }
@@ -49,6 +52,40 @@ public class TestController {
             log.error("", e);
             lock.unlock();
         }
+        return true;
     }
+    
+    /**
+     * redis单点获取锁 线程sleep获取自旋锁 注意retryTimes设置的合理性
+     * @param timeout
+     * @param sleepTime
+     * @param retryTimes
+     * @return
+     * @throws InterruptedException 
+     */
+    public Boolean getSpinLock() throws InterruptedException {
+        System.out.println("线程" + Thread.currentThread().getName() + "尝试获取锁");
+        for (int i = 0; i < 3; i++) {
+        	RLock lock = redissonService.getRLock("recordId_112");
+        	boolean bs = lock.tryLock(5, 6, TimeUnit.SECONDS);
+            if (bs) {
+                System.out.println("获取了redis锁的当前线程是 " + Thread.currentThread().getName());
+                return true;
+            }
+            // 自旋操作
+            try {
+                System.out.println("线程" + Thread.currentThread().getName()  + "占用锁失败，自旋等待结果");
+                Thread.sleep(6000);
+            } catch (InterruptedException e) {
+                continue;
+            }finally {
+            	lock.unlock();
+			}
+        }
+        // 超过retryTimes之后 说明获取获取锁失败
+        log.warn("redis get spinLock failed, key : {}, value : {}");
+        return false;
+    }
+
 	
 }
