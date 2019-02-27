@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sc.zzg.modules.flow.dao.ExecuteHisDao">
+<mapper namespace="com.it.zzg.modules.flow.dao.ExecuteHisDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.sc.zzg.modules.flow.entity.ExecuteHisEntity" id="executeHisMap">
+    <resultMap type="com.it.zzg.modules.flow.entity.ExecuteHisEntity" id="executeHisMap">
         <result property="id" column="id"/>
         <result property="node" column="node"/>
         <result property="nodeName" column="node_name"/>
@@ -16,11 +16,11 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
-	<select id="queryObject" resultType="com.sc.zzg.modules.flow.entity.ExecuteHisEntity">
+	<select id="queryObject" resultType="com.it.zzg.modules.flow.entity.ExecuteHisEntity">
 		select * from flow_execute_his  where id = #{value}
 	</select>
 
-	<select id="queryList" resultType="com.sc.zzg.modules.flow.entity.ExecuteHisEntity">
+	<select id="queryList" resultType="com.it.zzg.modules.flow.entity.ExecuteHisEntity">
 		select s.*,n.node_name,u.username from flow_execute_his s
 		<include refid="dyWhere"></include>
         <choose>
@@ -53,7 +53,7 @@
 		</where>
 	</sql>
 	
-	<insert id="save" parameterType="com.sc.zzg.modules.flow.entity.ExecuteHisEntity">
+	<insert id="save" parameterType="com.it.zzg.modules.flow.entity.ExecuteHisEntity">
 		insert into flow_execute_his
 		(
 			`id`, 
@@ -78,7 +78,7 @@
 		)
 	</insert>
 	 
-	<update id="update" parameterType="com.sc.zzg.modules.flow.entity.ExecuteHisEntity">
+	<update id="update" parameterType="com.it.zzg.modules.flow.entity.ExecuteHisEntity">
 		update flow_execute_his 
 		<set>
 			<if test="node != null">`node` = #{node}, </if>

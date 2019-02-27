@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sc.zzg.modules.flow.dao.NodeDao">
+<mapper namespace="com.it.zzg.modules.flow.dao.NodeDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.sc.zzg.modules.flow.entity.NodeEntity" id="nodeMap">
+    <resultMap type="com.it.zzg.modules.flow.entity.NodeEntity" id="nodeMap">
         <result property="nodeCode" column="node_code"/>
         <result property="nodeName" column="node_name"/>
         <result property="flowCode" column="flow_code"/>
@@ -31,10 +31,10 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-	<select id="queryObject" resultType="com.sc.zzg.modules.flow.entity.NodeEntity">
+	<select id="queryObject" resultType="com.it.zzg.modules.flow.entity.NodeEntity">
 		select * from flow_node where node_code = #{value}
 	</select>
-	<select id="queryObjectByOne"  resultType="com.sc.zzg.modules.flow.entity.NodeEntity">
+	<select id="queryObjectByOne"  resultType="com.it.zzg.modules.flow.entity.NodeEntity">
 		select * from flow_node where node_code = #{nodeCode} and flow_code=#{flowCode}
 	</select>
 	<sql id="dyWhere"> 
@@ -42,7 +42,7 @@
 			<if test=" flowCode != null and flowCode != '' ">and  s.flow_code = #{flowCode}</if>
 			<if test=" nodeCode != null and nodeCode != '' ">and  s.node_code = #{nodeCode}</if>
 	</sql>
-	<select id="queryList" resultType="com.sc.zzg.modules.flow.entity.NodeEntity">
+	<select id="queryList" resultType="com.it.zzg.modules.flow.entity.NodeEntity">
 		select 
 			s.*
 		from flow_node s
@@ -64,7 +64,7 @@
 		select count(*) from flow_node s   <include refid="dyWhere"></include>
 	</select>
 	 
-	<insert id="save" parameterType="com.sc.zzg.modules.flow.entity.NodeEntity">
+	<insert id="save" parameterType="com.it.zzg.modules.flow.entity.NodeEntity">
 		insert into flow_node
 		(
 			`node_code`, 
@@ -117,7 +117,7 @@
 		)
 	</insert>
 	 
-	<update id="update" parameterType="com.sc.zzg.modules.flow.entity.NodeEntity">
+	<update id="update" parameterType="com.it.zzg.modules.flow.entity.NodeEntity">
 		update flow_node 
 		<set>
 			<if test="nodeName != null">`node_name` = #{nodeName}, </if>

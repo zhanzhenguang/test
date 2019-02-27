@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sc.zzg.modules.sys.dao.SysUserDao">
-	<select id="queryObject" resultType="com.sc.zzg.modules.sys.entity.SysUserEntity">
+<mapper namespace="com.it.zzg.modules.sys.dao.SysUserDao">
+	<select id="queryObject" resultType="com.it.zzg.modules.sys.entity.SysUserEntity">
 		select * from sys_user where user_id = #{value}
 	</select>
 	
-	<select id="queryList" resultType="com.sc.zzg.modules.sys.entity.SysUserEntity">
+	<select id="queryList" resultType="com.it.zzg.modules.sys.entity.SysUserEntity">
 		select u.*, o.org_name from sys_user u 
 		<include refid="dyWheres"></include>
 		<choose>
@@ -69,11 +69,11 @@
 		where ur.user_id = #{userId}
 	</select>
 	
-	<select id="queryByUserName" resultType="com.sc.zzg.modules.sys.entity.SysUserEntity">
+	<select id="queryByUserName" resultType="com.it.zzg.modules.sys.entity.SysUserEntity">
 		select * from sys_user where username = #{username}
 	</select>
 	
-	<insert id="save" parameterType="com.sc.zzg.modules.sys.entity.SysUserEntity" useGeneratedKeys="true" keyProperty="userId">
+	<insert id="save" parameterType="com.it.zzg.modules.sys.entity.SysUserEntity" useGeneratedKeys="true" keyProperty="userId">
 		insert into sys_user
 		(
 			`user_id`, 
@@ -100,7 +100,7 @@
 		)
 	</insert>
 	 
-	<update id="update" parameterType="com.sc.zzg.modules.sys.entity.SysUserEntity">
+	<update id="update" parameterType="com.it.zzg.modules.sys.entity.SysUserEntity">
 		update sys_user 
 		<set> 
 			<if test="username != null">`username` = #{username}, </if>
@@ -136,7 +136,7 @@
 		</foreach>
 	</delete>
 	
-	<select id="queryListByRole" resultType="com.sc.zzg.modules.sys.entity.SysUserEntity">
+	<select id="queryListByRole" resultType="com.it.zzg.modules.sys.entity.SysUserEntity">
 		select u.* from sys_user u inner join sys_user_role r on u.user_id = r.user_id
 								inner join sys_role o on r.role_id = o.role_id 
 		<where>

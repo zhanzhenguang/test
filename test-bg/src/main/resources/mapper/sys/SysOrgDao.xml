@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sc.zzg.modules.sys.dao.SysOrgDao">
+<mapper namespace="com.it.zzg.modules.sys.dao.SysOrgDao">
 
-	<select id="queryObject" resultType="com.sc.zzg.modules.sys.entity.SysOrgEntity">
+	<select id="queryObject" resultType="com.it.zzg.modules.sys.entity.SysOrgEntity">
 		select * from sys_org where id = #{value}
 	</select>
 	
-	<insert id="save" parameterType="com.sc.zzg.modules.sys.entity.SysOrgEntity">
+	<insert id="save" parameterType="com.it.zzg.modules.sys.entity.SysOrgEntity">
 		insert into sys_org
 		(
 			`id`,
@@ -38,11 +38,11 @@
 		)
 	</insert>
 	
-	<select id="queryListParentId" resultType="com.sc.zzg.modules.sys.entity.SysOrgEntity">
+	<select id="queryListParentId" resultType="com.it.zzg.modules.sys.entity.SysOrgEntity">
 		select * from sys_org where parent_id = #{parentId} order by order_num asc 
 	</select>
 	
-	<select id="queryNotButtonList" resultType="com.sc.zzg.modules.sys.entity.SysOrgEntity">
+	<select id="queryNotButtonList" resultType="com.it.zzg.modules.sys.entity.SysOrgEntity">
 		select * from sys_org where 1=1 
 		<if test=" orgList != null ">
  			and id  in  
@@ -57,7 +57,7 @@
 		order by order_num asc 
 	</select>
 	
-	<select id="queryList" resultType="com.sc.zzg.modules.sys.entity.SysOrgEntity">
+	<select id="queryList" resultType="com.it.zzg.modules.sys.entity.SysOrgEntity">
 		select m.*,(select p.org_name from sys_org p where p.id = m.parent_id) as parentName 
 			from sys_org m
 		<choose>
@@ -77,7 +77,7 @@
 		select count(*) from sys_org
 	</select>
 	 
-	<update id="update" parameterType="com.sc.zzg.modules.sys.entity.SysOrgEntity">
+	<update id="update" parameterType="com.it.zzg.modules.sys.entity.SysOrgEntity">
 		update sys_org 
 		<set> 
 			<if test="parentId != null">`parent_id` = #{parentId}, </if>
@@ -105,7 +105,7 @@
 		delete from sys_org where org_code = #{orgCode}
 	</delete>
 	
-	<select id="selectOrg" resultType="com.sc.zzg.modules.sys.entity.SysOrgEntity">
+	<select id="selectOrg" resultType="com.it.zzg.modules.sys.entity.SysOrgEntity">
 		select o.* from sys_user u, sys_user_org_rel r, sys_org o where u.user_id = r.user_id and r.org_id = o.id and u.user_id = #{userId}
 	</select>
 	<select id="checkOrgCode" resultType="java.lang.Integer">

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sc.zzg.modules.flow.dao.ListDao">
+<mapper namespace="com.it.zzg.modules.flow.dao.ListDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.sc.zzg.modules.flow.entity.ListEntity" id="listMap">
+    <resultMap type="com.it.zzg.modules.flow.entity.ListEntity" id="listMap">
         <result property="flowCode" column="flow_code"/>
         <result property="flowName" column="flow_name"/>
         <result property="detailUrl" column="detail_url"/>
@@ -20,11 +20,11 @@
 			<if test="flowName != null">and `flow_name` like '%${flowName}%' </if>
 		</where>
 	</sql>
-	<select id="queryObject" resultType="com.sc.zzg.modules.flow.entity.ListEntity">
+	<select id="queryObject" resultType="com.it.zzg.modules.flow.entity.ListEntity">
 		select * from flow_list where flow_code = #{value}
 	</select>
 
-	<select id="queryList" resultType="com.sc.zzg.modules.flow.entity.ListEntity">
+	<select id="queryList" resultType="com.it.zzg.modules.flow.entity.ListEntity">
 		select * from flow_list
 		 <include refid="dyWhere"></include>
         <choose>
@@ -44,7 +44,7 @@
 		select count(*) from flow_list  <include refid="dyWhere"></include>
 	</select>
 	 
-	<insert id="save" parameterType="com.sc.zzg.modules.flow.entity.ListEntity">
+	<insert id="save" parameterType="com.it.zzg.modules.flow.entity.ListEntity">
 		insert into flow_list
 		(
 			`flow_code`, 
@@ -69,7 +69,7 @@
 		)
 	</insert>
 	 
-	<update id="update" parameterType="com.sc.zzg.modules.flow.entity.ListEntity">
+	<update id="update" parameterType="com.it.zzg.modules.flow.entity.ListEntity">
 		update flow_list 
 		<set>
 			<if test="flowName != null">`flow_name` = #{flowName}, </if>

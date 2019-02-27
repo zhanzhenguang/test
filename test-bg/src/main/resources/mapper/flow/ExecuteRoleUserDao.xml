@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sc.zzg.modules.flow.dao.ExecuteRoleUserDao">
+<mapper namespace="com.it.zzg.modules.flow.dao.ExecuteRoleUserDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.sc.zzg.modules.flow.entity.ExecuteRoleUserEntity" id="executeRoleUserMap">
+    <resultMap type="com.it.zzg.modules.flow.entity.ExecuteRoleUserEntity" id="executeRoleUserMap">
         <result property="userId" column="user_id"/>
         <result property="flowCode" column="flow_code"/>
         <result property="executeRole" column="execute_role"/>
     </resultMap>
 
-	<select id="queryObject" resultType="com.sc.zzg.modules.flow.entity.ExecuteRoleUserEntity">
+	<select id="queryObject" resultType="com.it.zzg.modules.flow.entity.ExecuteRoleUserEntity">
 		select * from flow_execute_role_user where userId = #{value}
 	</select>
 
-	<select id="queryList" resultType="com.sc.zzg.modules.flow.entity.ExecuteRoleUserEntity">
+	<select id="queryList" resultType="com.it.zzg.modules.flow.entity.ExecuteRoleUserEntity">
 		select * from flow_execute_role_user
         <choose>
             <when test="sidx != null and sidx.trim() != ''">
@@ -33,7 +33,7 @@
 		select count(*) from flow_execute_role_user 
 	</select>
 	 
-	<insert id="save" parameterType="com.sc.zzg.modules.flow.entity.ExecuteRoleUserEntity">
+	<insert id="save" parameterType="com.it.zzg.modules.flow.entity.ExecuteRoleUserEntity">
 		insert into flow_execute_role_user
 		(
 			`user_id`, 
@@ -48,7 +48,7 @@
 		</foreach>
 	</insert>
 	 
-	<update id="update" parameterType="com.sc.zzg.modules.flow.entity.ExecuteRoleUserEntity">
+	<update id="update" parameterType="com.it.zzg.modules.flow.entity.ExecuteRoleUserEntity">
 		update flow_execute_role_user 
 		<set>
 			<if test="executeRole != null">`execute_role` = #{executeRole},</if>

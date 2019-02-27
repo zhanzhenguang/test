@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sc.zzg.modules.sys.dao.AppDao">
+<mapper namespace="com.it.zzg.modules.sys.dao.AppDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.sc.zzg.modules.sys.entity.AppEntity" id="appMap">
+    <resultMap type="com.it.zzg.modules.sys.entity.AppEntity" id="appMap">
         <result property="id" column="id"/>
         <result property="password" column="password"/>
         <result property="appName" column="app_name"/>
@@ -25,11 +25,11 @@
         <result property="status" column="status"/>
     </resultMap>
 
-	<select id="queryObject" resultType="com.sc.zzg.modules.sys.entity.AppEntity">
+	<select id="queryObject" resultType="com.it.zzg.modules.sys.entity.AppEntity">
 		select * from app where id = #{value}
 	</select>
 
-	<select id="queryList" resultType="com.sc.zzg.modules.sys.entity.AppEntity">
+	<select id="queryList" resultType="com.it.zzg.modules.sys.entity.AppEntity">
 		select * from app
 		<where>
 			<if test=" appName != null and appName.trim() != '' ">
@@ -57,7 +57,7 @@
 		select count(*) from app 
 	</select>
 	 
-	<insert id="save" parameterType="com.sc.zzg.modules.sys.entity.AppEntity" useGeneratedKeys="true" keyProperty="id">
+	<insert id="save" parameterType="com.it.zzg.modules.sys.entity.AppEntity" useGeneratedKeys="true" keyProperty="id">
 		insert into app
 		(
 			`password`,
@@ -100,7 +100,7 @@
 		)
 	</insert>
 	 
-	<update id="update" parameterType="com.sc.zzg.modules.sys.entity.AppEntity">
+	<update id="update" parameterType="com.it.zzg.modules.sys.entity.AppEntity">
 		update app 
 		<set>
 			<if test="appName != null">`app_name` = #{appName}, </if>

@@ -28,6 +28,7 @@
         <qcloud.cos.version>4.4</qcloud.cos.version>
 		<!--webmagic 配置-->
 		<us.codecraft.version>0.7.3</us.codecraft.version>
+		<redisson.version>3.5.7</redisson.version>
     </properties>
     <dependencies>
     	<dependency>
@@ -50,10 +51,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-		<!-- <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency> -->
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
@@ -69,10 +66,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
              <!--排除这个slf4j-log4j12-->
 	        <exclusions>
-               <!--  <exclusion>
-                    <artifactId>logback-classic</artifactId>
-                    <groupId>ch.qos.logback</groupId>
-                </exclusion> -->
                 <exclusion>
                     <artifactId>log4j-over-slf4j</artifactId>
                     <groupId>org.slf4j</groupId>
@@ -97,6 +90,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+        <!-- redisson -->
+		<dependency>
+		    <groupId>org.redisson</groupId>
+		    <artifactId>redisson</artifactId>
+		    <version>${redisson.version}</version>
+		</dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sc.zzg.modules.flow.dao.ExecuteRoleDao">
+<mapper namespace="com.it.zzg.modules.flow.dao.ExecuteRoleDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity" id="executeRoleMap">
+    <resultMap type="com.it.zzg.modules.flow.entity.ExecuteRoleEntity" id="executeRoleMap">
         <result property="executeRole" column="execute_role"/>
         <result property="executeRoleName" column="execute_role_name"/>
         <result property="node" column="node"/>
@@ -16,11 +16,11 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-	<select id="queryObject" resultType="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity">
+	<select id="queryObject" resultType="com.it.zzg.modules.flow.entity.ExecuteRoleEntity">
 		select * from flow_execute_role where execute_role = #{value}
 	</select>
 
-	<select id="queryList" resultType="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity">
+	<select id="queryList" resultType="com.it.zzg.modules.flow.entity.ExecuteRoleEntity">
 		select * from flow_execute_role t
 		 <include refid="dyWhere"></include>
         <choose>
@@ -47,7 +47,7 @@
 		</where>
 	</sql>
 	
-	<select id="select" resultType="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity">
+	<select id="select" resultType="com.it.zzg.modules.flow.entity.ExecuteRoleEntity">
 		select 
 			t.execute_role,
 			t.execute_role_name,
@@ -66,7 +66,7 @@
 		) 
 		order by t.execute_role desc 
 	</select>
-	<insert id="save" parameterType="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity">
+	<insert id="save" parameterType="com.it.zzg.modules.flow.entity.ExecuteRoleEntity">
 		insert into flow_execute_role
 		(
 			`execute_role`,
@@ -93,7 +93,7 @@
 		)
 	</insert>
 	 
-	<update id="update" parameterType="com.sc.zzg.modules.flow.entity.ExecuteRoleEntity">
+	<update id="update" parameterType="com.it.zzg.modules.flow.entity.ExecuteRoleEntity">
 		update flow_execute_role 
 		<set>
 			<if test="node != null">`node` = #{node}, </if>

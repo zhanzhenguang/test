@@ -7,7 +7,6 @@
     </settings>
 
     <plugins>
-        <plugin interceptor="com.sc.zzg.interceptor.PageInterceptor">
-        </plugin>
+        <plugin interceptor="com.it.zzg.interceptor.PageInterceptor"></plugin>
     </plugins>
 </configuration>
